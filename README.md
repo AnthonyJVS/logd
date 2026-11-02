@@ -1,8 +1,28 @@
-<p align="center"><img src="ui/logo.png" width="96" alt="Logd logo"></p>
+<p align="center">
+  <img src="docs/banner.png" alt="Logd — every process, every connection, every autostart" width="100%">
+</p>
 
-<h1 align="center">Logd</h1>
+<p align="center">
+  <b>A live process, network and autostart monitor for Windows.</b><br>
+  Tiling-WM look, six themes, one ~5&nbsp;MB portable executable.
+</p>
 
-<p align="center">A live process, network and autostart monitor for Windows — tiling-WM look, ~5 MB.</p>
+<p align="center">
+  <a href="../../releases"><img src="https://img.shields.io/badge/download-logd.exe-1793d1?style=for-the-badge&logo=windows&logoColor=white" alt="Download"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-1793d1?style=flat-square&logo=windows" alt="Windows 10 | 11">
+  <img src="https://img.shields.io/badge/Tauri-2-24c8db?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2">
+  <img src="https://img.shields.io/badge/Rust-backend-dea584?style=flat-square&logo=rust&logoColor=white" alt="Rust">
+  <img src="https://img.shields.io/badge/size-~5%20MB-8fc087?style=flat-square" alt="~5 MB">
+  <img src="https://img.shields.io/badge/telemetry-none-b892c4?style=flat-square" alt="No telemetry">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-e3bf72?style=flat-square" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <img src="docs/dash.png" alt="Logd dashboard" width="100%">
+</p>
 
 ---
 
@@ -44,6 +64,21 @@ Everything is recorded locally, so you can scroll back in time.
 - Windows notifications, tray icon, start with Windows (optionally elevated for ETW)
 
 Keyboard: `1`–`8` tabs · `/` search · `space` pause the feed · `k` kill selected · `esc` close / restore
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/netstat.png" alt="netstat tab with process details"><br><sub><b>netstat</b> — every connection with host names and signatures, plus the full story of a process · <i>Tokyo Night</i></sub></td>
+    <td width="50%"><img src="docs/ps.png" alt="process list with right-click menu"><br><sub><b>ps</b> — right-click to suspend, kill a whole tree or block a program from starting · <i>Gruvbox</i></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/autoruns.png" alt="autoruns and scheduled tasks"><br><sub><b>sched</b> — upcoming tasks and every autostart, hidden ones included, each with an on/off switch · <i>Catppuccin Mocha</i></sub></td>
+    <td width="50%"><img src="docs/rules.png" alt="rules and alerts"><br><sub><b>rules</b> — background rules that notify, log or kill, with an alert journal · <i>Nord</i></sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots show the built-in demo data (<code>npm run preview</code>), not a real machine.</sub>
 
 ## Download
 
