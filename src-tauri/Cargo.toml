@@ -1,0 +1,31 @@
+[package]
+name = "logd"
+version = "0.1.0"
+description = "Live process, network and autostart monitor for Windows"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sysinfo = "0.33"
+rusqlite = { version = "0.32", features = ["bundled"] }
+ferrisetw = "1"
+base64 = "0.22"
+dns-lookup = "2"
+winreg = "0.52"
+tauri-winrt-notification = "0.7"
+tauri-plugin-single-instance = "2"
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_System_Threading", "Win32_UI_Shell", "Win32_NetworkManagement_IpHelper", "Win32_Networking_WinSock"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
