@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logd</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="bar" data-tauri-drag-region>
+    <div class="bl" data-tauri-drag-region>
+      <img class="logo" src="logo.png" alt=""><span class="brand">Logd</span>
+      <nav id="wsnav">
+        <button data-ws="dash"><i>1</i>dash</button>
+        <button data-ws="log"><i>2</i>journal</button>
+        <button data-ws="ps"><i>3</i>ps</button>
+        <button data-ws="tree"><i>4</i>pstree</button>
+        <button data-ws="net"><i>5</i>netstat</button>
+        <button data-ws="hist"><i>6</i>history</button>
+        <button data-ws="sched"><i>7</i>sched</button>
+        <button data-ws="rules"><i>8</i>rules<span id="alert-badge" class="badge hide"></span></button>
+      </nav>
+    </div>
+    <div class="bc" id="clock" data-tauri-drag-region></div>
+    <div class="br">
+      <span class="mod" id="m-cpu"></span>
+      <span class="mod" id="m-mem"></span>
+      <span class="mod" id="m-net"></span>
+      <span class="mod" id="m-etw"></span>
+      <button class="wb" id="b-cfg" title="Settings">⚙</button>
+      <button class="wb" id="b-min" title="Minimize">─</button>
+      <button class="wb" id="b-max" title="Maximize">□</button>
+      <button class="wb wx" id="b-close" title="Hide to tray">✕</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1: everything on one screen -->
+    <section class="ws dock" id="ws-dash">
+      <div class="pane" data-pane="fetch"><div class="pt"><b>neofetch</b></div><div class="pb" id="fetch"></div></div>
+      <div class="pane" data-pane="graphs"><div class="pt"><b>htop</b><span id="core-meta"></span></div><div class="pb" id="graphs">
+        <div class="spark"><label>cpu</label><canvas id="sp-cpu"></canvas><span id="sv-cpu"></span></div>
+        <div class="spark"><label>mem</label><canvas id="sp-mem"></canvas><span id="sv-mem"></span></div>
+        <div class="spark"><label>net↓</label><canvas id="sp-rx"></canvas><span id="sv-rx"></span></div>
+        <div class="spark"><label>net↑</label><canvas id="sp-tx"></canvas><span id="sv-tx"></span></div>
+        <div id="cores"></div>
+      </div></div>
+      <div class="pane" data-pane="log"><div class="pt"><b>journalctl -f</b><span id="dlog-meta"></span></div><div class="pb log" id="dlog"></div></div>
+      <div class="pane" data-pane="top"><div class="pt"><b>top</b><span>by CPU</span></div><div class="pb" id="dtop"></div></div>
+      <div class="pane" data-pane="next"><div class="pt"><b>systemctl list-timers</b><span id="dnext-meta"></span></div><div class="pb" id="dnext"></div></div>
+      <div class="pane" data-pane="tl"><div class="pt"><b>timeline</b><span>−15 min · now · +15 min</span></div><div class="pb tlw"><canvas id="tl-dash"></canvas></div></div>
+    </section>
+
+    <!-- 2: full live log -->
+    <section class="ws" id="ws-log">
+      <div class="pane full">
+        <div class="pt"><b>journalctl -f</b>
+          <div class="tools">
+            <input id="log-q" placeholder="/ filter: name, path, pid…" spellcheck="false">
+            <label class="tg"><input type="checkbox" id="log-start" checked><span class="ok">▲ spawn</span></label>
+            <label class="tg"><input type="checkbox" id="log-stop" checked><span class="err">▼ exit</span></label>
+            <label class="tg"><input type="checkbox" id="log-flag"><span class="warn">only !flags</span></label>
+            <button class="btn" id="log-pause">␣ pause</button>
+            <button class="btn" id="log-clear">clear</button>
+          </div>
+        </div>
+        <div class="pb log" id="flog"></div>
+      </div>
+    </section>
+
+    <!-- 3: processes table -->
+    <section class="ws" id="ws-ps">
+      <div class="pane full">
+        <div class="pt"><b>ps aux</b><span id="ps-count"></span>
+          <div class="tools"><input id="ps-q" placeholder="/ search…" spellcheck="false"></div>
+        </div>
+        <div class="pb scroll"><table class="tbl" id="ps-tbl">
+          <thead><tr>
+            <th data-k="pid" class="r">PID</th><th data-k="name">NAME</th><th data-k="cpu" class="r">CPU%</th>
+            <th data-k="mem" class="r">MEM</th><th data-k="dr" class="r">READ/s</th><th data-k="dw" class="r">WRITE/s</th>
+            <th data-k="net" class="r">NET</th><th data-k="signer">SIGNATURE</th>
+            <th data-k="user">USER</th><th data-k="start_ms" class="r">UPTIME</th><th data-k="exe">PATH</th>
+          </tr></thead><tbody id="ps-body"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- 4: process tree -->
+    <section class="ws" id="ws-tree">
+      <div class="pane full">
+        <div class="pt"><b>pstree -p</b><span id="tree-meta"></span>
+          <div class="tools"><input id="tree-q" placeholder="/ search…" spellcheck="false">
+            <button class="btn" id="tree-exp">expand all</button><button class="btn" id="tree-col">collapse all</button></div>
+        </div>
+        <div class="pb scroll tree" id="tree"></div>
+      </div>
+    </section>
+
+    <!-- 5: network -->
+    <section class="ws dock" id="ws-net">
+      <div class="pane" data-pane="conns">
+        <div class="pt"><b>ss -tunap</b><span id="net-meta"></span>
+          <div class="tools">
+            <select id="net-view">
+              <option value="remote" selected>connections</option><option value="listen">listening</option>
+              <option value="udp">udp</option><option value="all">everything</option>
+            </select>
+            <label class="tg"><input type="checkbox" id="net-pub"><span>internet only</span></label>
+            <input id="net-q" placeholder="/ process, ip, host, port…" spellcheck="false">
+          </div>
+        </div>
+        <div class="pb scroll"><table class="tbl" id="net-tbl">
+          <thead><tr><th>PROTO</th><th>PROCESS</th><th class="r">PID</th><th>LOCAL</th><th>REMOTE</th><th>HOST</th><th>STATE</th><th class="r">SINCE</th><th>SIGNATURE</th></tr></thead>
+          <tbody id="net-body"></tbody>
+        </table></div>
+      </div>
+      <div class="pane" data-pane="listen"><div class="pt"><b>open ports</b><span id="lis-meta"></span></div>
+        <div class="pb scroll"><table class="tbl"><thead><tr><th>PROTO</th><th class="r">PORT</th><th>ADDRESS</th><th>PROCESS</th></tr></thead><tbody id="lis-body"></tbody></table></div></div>
+      <div class="pane" data-pane="fresh"><div class="pt"><b>first contacts</b><span>new host for that program</span></div>
+        <div class="pb scroll" id="fresh"></div></div>
+    </section>
+
+    <!-- 6: history -->
+    <section class="ws" id="ws-hist">
+      <div class="pane full">
+        <div class="pt"><b>history</b><span id="hist-meta"></span>
+          <div class="tools">
+            <select id="hist-range">
+              <option value="900000">15 min</option><option value="3600000" selected>1 hour</option>
+              <option value="21600000">6 hours</option><option value="86400000">24 hours</option>
+              <option value="604800000">7 days</option><option value="custom">custom…</option>
+            </select>
+            <input type="datetime-local" id="hist-from" class="hide"><input type="datetime-local" id="hist-to" class="hide">
+            <input id="hist-q" placeholder="/ name, path, cmd, pid…" spellcheck="false">
+            <label class="tg"><input type="checkbox" id="hist-hl" checked><span>hide long-running</span></label>
+            <button class="btn" id="hist-go">↻</button>
+            <button class="btn" id="hist-csv">CSV</button>
+          </div>
+        </div>
+        <div class="hist-grid">
+          <div class="hchart"><canvas id="hist-samples"></canvas></div>
+          <div class="htl"><canvas id="tl-hist"></canvas></div>
+          <div class="scroll"><table class="tbl" id="hist-tbl">
+            <thead><tr><th>START</th><th>END</th><th class="r">LIVED</th><th>NAME</th><th class="r">PID</th><th class="r">CODE</th><th>PARENT</th><th class="r">PEAK</th><th>PATH / CMD</th></tr></thead>
+            <tbody id="hist-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7: scheduled / pending -->
+    <section class="ws dock" id="ws-sched">
+      <div class="pane" data-pane="tasks"><div class="pt"><b>task scheduler</b><span id="sch-meta"></span>
+        <div class="tools"><input id="sch-q" placeholder="/ search…" spellcheck="false"><button class="btn" id="sch-refresh">↻ rescan</button></div></div>
+        <div class="pb scroll"><table class="tbl"><thead><tr><th>ON</th><th class="r">IN</th><th>WHEN</th><th>TASK</th><th>TRIGGER</th><th>LAST RUN</th><th>ACTION</th></tr></thead><tbody id="sch-tasks"></tbody></table></div></div>
+      <div class="pane" data-pane="svc"><div class="pt"><b>services</b><span>waiting / pending</span></div>
+        <div class="pb scroll"><table class="tbl"><thead><tr><th>STATE</th><th>SERVICE</th><th>START MODE</th><th>PATH</th></tr></thead><tbody id="sch-svc"></tbody></table></div></div>
+      <div class="pane" data-pane="autoruns"><div class="pt"><b>autoruns</b><span id="ar-meta"></span>
+        <div class="tools">
+          <select id="ar-kind"><option value="">all types</option><option value="startup">startup apps</option><option value="task">logon tasks</option>
+            <option value="service">services</option><option value="hidden">hidden places</option><option value="off">disabled</option></select>
+          <label class="tg"><input type="checkbox" id="ar-ms" checked><span>hide Windows</span></label>
+          <input id="ar-q" placeholder="/ name, command…" spellcheck="false"><button class="btn" id="ar-scan">↻ scan</button></div></div>
+        <div class="pb scroll"><table class="tbl" id="ar-tbl"><thead><tr><th>ON</th><th>TYPE</th><th>NAME</th><th>COMMAND</th><th>WHERE</th></tr></thead><tbody id="ar-body"></tbody></table></div></div>
+    </section>
+    <!-- 8: rules & alerts -->
+    <section class="ws dock" id="ws-rules">
+      <div class="pane" data-pane="rules">
+        <div class="pt"><b>rules</b><span id="rules-meta"></span>
+          <div class="tools"><button class="btn" id="rule-add">+ new rule</button><button class="btn" id="rule-defaults">restore defaults</button></div>
+        </div>
+        <div class="pb scroll"><table class="tbl" id="rules-tbl">
+          <thead><tr><th>ON</th><th>NAME</th><th>WHEN</th><th>MATCHES</th><th>ACTION</th><th></th></tr></thead>
+          <tbody id="rules-body"></tbody>
+        </table>
+        <div class="hint">Rules run in the background, even when logd is hidden in the tray.
+          Patterns: <code>chrome</code> = contains, <code>*\temp\*.exe</code> wildcards, <code>a|b</code> either.
+          Flags: <code>any</code>, <code>temp</code>, <code>downloads</code>, <code>masquerade</code>, <code>encoded</code>, <code>hidden</code>, <code>double-ext</code>, <code>unsigned</code>, <code>bad-sig</code>.</div></div>
+      </div>
+      <div class="pane" data-pane="alerts">
+        <div class="pt"><b>alerts</b><span id="alerts-meta"></span>
+          <div class="tools"><input id="alerts-q" placeholder="/ filter…" spellcheck="false"><button class="btn" id="alerts-clear">clear</button></div>
+        </div>
+        <div class="pb scroll log" id="alerts"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="status"></footer>
+</div>
+
+<aside id="drawer"></aside>
+<div id="modal"></div>
+<div id="tip"></div>
+<div id="toasts"></div>
+<div id="ctx"></div>
+
+<script src="mock.js"></script>
+<script src="layout.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
