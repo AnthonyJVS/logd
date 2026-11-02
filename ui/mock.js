@@ -1,6 +1,13 @@
 // Fake backend so the UI can be previewed in a plain browser. Unused inside the app.
 (() => {
   if (window.__TAURI__) return;
+  // screenshot helpers: ?ws=net&theme=nord&pid=8812&ctx=8812
+  const qp = new URLSearchParams(location.search);
+  for (const k of ['ws', 'theme']) if (qp.has(k)) localStorage.setItem('logd.' + k, JSON.stringify(qp.get(k)));
+  addEventListener('load', () => setTimeout(() => {
+    if (qp.has('pid')) window.openDetails({ pid: +qp.get('pid') });
+    if (qp.has('ctx')) window.openCtx(+(qp.get('x') || 260), +(qp.get('y') || 150), +qp.get('ctx'));
+  }, 2500));
   const rnd = (a, b) => a + Math.random() * (b - a);
   const pick = a => a[Math.floor(Math.random() * a.length)];
   const T = () => Date.now();

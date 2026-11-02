@@ -619,7 +619,7 @@ async function renderDetails(rowHint) {
   h += `<div class="kvt">` +
     kv('status', isLive ? (p.suspended ? '<span class="cyan">⏸ suspended by Logd</span>' : `<span class="ok">running</span> <span class="dim">${esc(p.status)}</span>`) : end ? `<span class="err">exited</span> code=${row?.exit_code ?? '?'}` : '<span class="dim">unknown</span>') +
     kv('path', exe ? `<span class="code v">${esc(exe)}</span>` : '<span class="dim">access denied (system)</span>') +
-    (exe ? kv('signature', sig === 'valid' ? `${sigBadge(sig, signer, p?.sig_os, exe)} <span class="dim">${esc(signer)}</span>` : sigBadge(sig, signer, false, exe)) : '') +
+    (exe ? kv('signature', sig === 'valid' ? `<span class="sig ok${p?.sig_os ? ' os' : ''}">✓</span> ${esc(signer)}` : sigBadge(sig, signer, false, exe)) : '') +
     kv('cmd', cmd ? `<span class="code v">${esc(cmd)}</span>` : '<span class="dim">—</span>') +
     kv('parent', ppid != null ? `<a data-goto="${ppid}">${esc(parent || '?')} [${ppid}]</a>` : '—') +
     kv('user', esc(p?.user || row?.user || '—')) +

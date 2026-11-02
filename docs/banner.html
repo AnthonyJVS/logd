@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- Source of docs/banner.png (rendered with headless Edge at 1280x400). -->
+<html><head><meta charset="utf-8"><style>
+  html, body { margin: 0; width: 1280px; height: 400px; overflow: hidden; }
+  body { font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace; color: #c9cdd3;
+    background: radial-gradient(700px 380px at 18% 30%, rgba(23,147,209,.28), transparent 70%),
+                radial-gradient(600px 400px at 95% 110%, rgba(184,146,196,.22), transparent 70%), #16181c; }
+  .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(140,148,160,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140,148,160,.06) 1px, transparent 1px); background-size: 32px 32px; }
+  .wrap { position: absolute; inset: 0; display: flex; align-items: center; gap: 56px; padding: 0 96px; }
+  img { width: 230px; height: 230px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.55)) drop-shadow(0 0 40px rgba(23,147,209,.25)); }
+  h1 { margin: 0; font-size: 104px; line-height: 1; color: #e8eaee; letter-spacing: -3px; }
+  h1 span { color: #1793d1; }
+  p { margin: 18px 0 26px; font-size: 24px; color: #9aa1ab; }
+  .term { display: inline-block; font-size: 17px; padding: 10px 16px; border: 1px solid rgba(120,128,140,.3); border-radius: 6px; background: rgba(0,0,0,.28); }
+  .ok { color: #8fc087; } .err { color: #e2727b; } .dim { color: #5d636c; } .cy { color: #62bcc6; } .w { color: #e8eaee; }
+</style></head><body>
+<div class="grid"></div>
+<div class="wrap">
+  <img src="../logo/logo-square.png" alt="">
+  <div>
+    <h1>Log<span>d</span></h1>
+    <p>every process · every connection · every autostart</p>
+    <div class="term"><span class="dim">17:42:03.118</span> <span class="ok">▲ spawn</span> <span class="w">setup.exe</span><span class="dim">[8812]</span> ← <span class="cy">explorer.exe</span> &nbsp;<span class="err">!unsigned</span></div>
+  </div>
+</div>
+</body></html>
