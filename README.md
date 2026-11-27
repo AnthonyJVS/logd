@@ -21,6 +21,10 @@
 </p>
 
 <p align="center">
+  <a href="https://www.virustotal.com/gui/file/0dbe1e44c7441c128a75e416c7b13438b28d692405bfd1a98198ec54394253c1"><img src="https://img.shields.io/badge/VirusTotal-2%2F70%20%C2%B7%20ML%20only-97ca00?logo=virustotal&logoColor=white" alt="VirusTotal: 2/70, machine-learning heuristics only"></a>
+</p>
+
+<p align="center">
   <img src="docs/dash.png" alt="Logd dashboard" width="100%">
 </p>
 
@@ -85,6 +89,13 @@ Keyboard: `1`–`8` tabs · `/` search · `space` pause the feed · `k` kill sel
 Grab `logd.exe` from [Releases](../../releases). It is a single portable executable; WebView2 (built into Windows 10/11) is required.
 
 > **Smart App Control:** the executable is not code-signed, so Windows Smart App Control (if enabled) will block it.
+
+**VirusTotal:** [2 of 70 engines](https://www.virustotal.com/gui/file/0dbe1e44c7441c128a75e416c7b13438b28d692405bfd1a98198ec54394253c1) flag `logd.exe` — DeepInstinct and Trapmine, both
+machine-learning heuristics that often score new, unsigned executables as suspicious. All signature-based engines report it clean.
+A process monitor also does things malware does (reads other processes, kernel tracing, kills and suspends processes, edits autostart entries),
+which is exactly what such models look for. The full source is in this repository if you prefer to build it yourself.
+
+<sub>SHA-256 of v0.1.0: <code>0dbe1e44c7441c128a75e416c7b13438b28d692405bfd1a98198ec54394253c1</code></sub>
 
 Run it normally for polling mode, or as administrator for ETW tracing and to change system-wide autostart entries.
 
