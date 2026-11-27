@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="docs/banner.png" alt="Logd — every process, every connection, every autostart" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/banner-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/banner-light.png">
+    <img src="docs/banner-dark.png" alt="Logd — every process, every connection, every autostart" width="100%">
+  </picture>
 </p>
 
 <p align="center">

@@ -1,21 +1,22 @@
 <!doctype html>
-<!-- Source of docs/banner.png (rendered with headless Edge at 1280x400). -->
+<!-- Source of docs/banner-dark.png and docs/banner-light.png: rendered with headless Edge at 1280x400
+     on a transparent background. Add ?theme=light for the variant shown on GitHub's light theme. -->
 <html><head><meta charset="utf-8"><style>
-  html, body { margin: 0; width: 1280px; height: 400px; overflow: hidden; }
-  body { font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace; color: #c9cdd3;
-    background: radial-gradient(700px 380px at 18% 30%, rgba(23,147,209,.28), transparent 70%),
-                radial-gradient(600px 400px at 95% 110%, rgba(184,146,196,.22), transparent 70%), #16181c; }
-  .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(140,148,160,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(140,148,160,.06) 1px, transparent 1px); background-size: 32px 32px; }
+  html, body { margin: 0; width: 1280px; height: 400px; overflow: hidden; background: transparent; }
+  body { font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+    --title: #e8eaee; --sub: #9aa1ab; --box-bd: rgba(120,128,140,.35); --box-bg: rgba(0,0,0,.35);
+    --ok: #8fc087; --err: #e2727b; --dim: #6b717b; --cy: #62bcc6; --w: #e8eaee; --acc: #1793d1; }
+  body.light { --title: #1f2328; --sub: #59636e; --box-bd: rgba(31,35,40,.18); --box-bg: rgba(246,248,250,.9);
+    --ok: #1a7f37; --err: #cf222e; --dim: #8c959f; --cy: #0e7c86; --w: #1f2328; --acc: #0969da; }
   .wrap { position: absolute; inset: 0; display: flex; align-items: center; gap: 56px; padding: 0 96px; }
-  img { width: 230px; height: 230px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.55)) drop-shadow(0 0 40px rgba(23,147,209,.25)); }
-  h1 { margin: 0; font-size: 104px; line-height: 1; color: #e8eaee; letter-spacing: -3px; }
-  h1 span { color: #1793d1; }
-  p { margin: 18px 0 26px; font-size: 24px; color: #9aa1ab; }
-  .term { display: inline-block; font-size: 17px; padding: 10px 16px; border: 1px solid rgba(120,128,140,.3); border-radius: 6px; background: rgba(0,0,0,.28); }
-  .ok { color: #8fc087; } .err { color: #e2727b; } .dim { color: #5d636c; } .cy { color: #62bcc6; } .w { color: #e8eaee; }
+  img { width: 230px; height: 230px; filter: drop-shadow(0 14px 24px rgba(0,0,0,.35)); }
+  h1 { margin: 0; font-size: 104px; line-height: 1; color: var(--title); letter-spacing: -3px; }
+  h1 span { color: var(--acc); }
+  p { margin: 18px 0 26px; font-size: 24px; color: var(--sub); }
+  .term { display: inline-block; font-size: 17px; padding: 10px 16px; border: 1px solid var(--box-bd); border-radius: 6px; background: var(--box-bg); color: var(--w); }
+  .ok { color: var(--ok); } .err { color: var(--err); } .dim { color: var(--dim); } .cy { color: var(--cy); } .w { color: var(--w); }
 </style></head><body>
-<div class="grid"></div>
+<script>if (location.search.includes('theme=light')) document.body.className = 'light';</script>
 <div class="wrap">
   <img src="../logo/logo-square.png" alt="">
   <div>
